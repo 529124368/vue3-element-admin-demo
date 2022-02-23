@@ -23,7 +23,7 @@
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
-        <el-link type="success" class="register" @click="this.$router.push('/register')">注册账号</el-link>
+        <el-link type="success" class="register" @click="topage()">注册账号</el-link>
       </el-form-item>
     </el-form>
 </template>
@@ -34,7 +34,9 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { h } from 'vue'
- var checkAccount = (rule, value, callback) => {
+  export default {
+    data() {
+      var checkAccount = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('账号不能为空'))
         }
@@ -49,8 +51,6 @@ import { h } from 'vue'
         }
         callback()
       }
-  export default {
-    data() {
       return {
         fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
         url: 'https://avatars.githubusercontent.com/u/22612129?v=4',
@@ -66,7 +66,6 @@ import { h } from 'vue'
     },
     methods: {
       submitForm(formName) {
-        console.log(this.ruleForm.pass)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             //请求数据做成
@@ -96,6 +95,17 @@ import { h } from 'vue'
       },
       resetForm(formName) {
         this.$refs[formName].resetFields()
+      },
+      topage(){
+        this.$notify.success({
+              title: 'Info',
+              message: '页面即将跳转',
+              showClose: false,
+        })
+        setTimeout(() => {
+          //需要定时执行的代码
+          this.$router.push('/register')
+          }, 3000)
       },
     },
   }
