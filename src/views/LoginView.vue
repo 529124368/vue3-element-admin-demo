@@ -76,6 +76,7 @@ import { h } from 'vue'
                 .then(response => {
                   if(response.data['state']=="ok") {
                       //画面跳转
+                      sessionStorage.setItem("userName",response.data['data'].name)
                       this.$router.push('/about') 
                   }else {
                     ElMessage({
