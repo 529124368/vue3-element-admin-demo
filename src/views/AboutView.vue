@@ -1,5 +1,6 @@
 
 <template>
+  <el-link type="success" class="register" style=" margin-left:1222px" @click="outAccount()">退出账号</el-link>
 <el-container style="height: 500px; border: 1px solid #eee">
   <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
@@ -88,13 +89,41 @@
         address: '上海市普陀区金沙江路 1518 弄',
       }
       return {
-        userName :"fsfsf",
+        appUrl:'http://www.zimuge.tk/api',
+        userName :"",
         tableData: Array(20).fill(item),
       }
     },
     mounted(){
-     this.userName=sessionStorage.getItem("userName")
+      //检验是否已经登录
+     this.axios.post(this.appUrl+`/checkislogined`)
+        .then(response => {
+          if(response.data['state']!="ok") {
+              //画面跳转
+              this.$router.push('/') 
+          }else {
+            this.userName=sessionStorage.getItem("userName")
+          }
+        })
+        .catch(function (error) { // 请求失败处理
+          console.log(error);
+        });
     },
+    methods:{
+      outAccount() {
+        this.axios.post(this.appUrl+`/outlogin`)
+            .then(response => {
+              if(response.data['state']=="ok") {
+                  //画面跳转
+                  this.setCookie("userId","",-1)
+              }
+            })
+            .catch(function (error) { // 请求失败处理
+              console.log(error);
+            });
+          this.$router.push('/')
+      }
+    }
   }
 </script>
 

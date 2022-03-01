@@ -80,6 +80,7 @@ var checkName = (rule, value, callback) => {
         callback()
       }
       return {
+        appUrl:'http://www.zimuge.tk/api',
         ruleForm: {
           pass: '',
           checkPass: '',
@@ -103,7 +104,7 @@ var checkName = (rule, value, callback) => {
             data.append('account',this.ruleForm.account);
             data.append('password',this.ruleForm.pass);
             data.append('name',this.ruleForm.name);
-            this.axios.post(`http://127.0.0.1:8081/register`,data)
+            this.axios.post(this.appUrl+`/register`,data)
                 .then(response => {
                   if(response.data['state']=="ok") {
                       //画面跳转

@@ -1,6 +1,5 @@
 
 <template>
-<el-image style="width: 100px; height: 100px;margin-bottom:29px" :src="url" :fit="fit"></el-image>
 <div style="margin-bottom:30px">管理系统demo</div>
     <el-form
       :model="ruleForm"
@@ -20,6 +19,12 @@
             autocomplete="off"
           ></el-input>
       </el-form-item>
+      <el-form-item label="验证码" prop="idenCode">
+        <el-input v-model.number="ruleForm.idenCode"></el-input>
+      </el-form-item>
+      <el-form-item>
+      <el-image :src="yanzhengma"></el-image>
+       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -51,18 +56,39 @@ import { h } from 'vue'
         }
         callback()
       }
+      var validateCode = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入验证码'))
+        }
+        callback()
+      }
       return {
-        fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
-        url: 'https://avatars.githubusercontent.com/u/22612129?v=4',
+        yanzhengma:'http://www.zimuge.tk/api/code',
+        appUrl:'http://www.zimuge.tk/api',
         ruleForm: {
           pass: '',
           account: '',
+          idenCode:'',
         },
         rules: {
           pass: [{ validator: validatePass, trigger: 'blur' }],
           account: [{ validator: checkAccount, trigger: 'blur' }],
+          idenCode:[{ validator: validateCode, trigger: 'blur' }],
         },
       }
+    },
+    mounted(){
+      //检验是否已经登录
+     this.axios.post(this.appUrl+`/checkislogined`)
+        .then(response => {
+          if(response.data['state']=="ok") {
+              //画面跳转
+              this.$router.push('/about') 
+          }
+        })
+        .catch(function (error) { // 请求失败处理
+          console.log(error);
+        });
     },
     methods: {
       submitForm(formName) {
@@ -72,7 +98,7 @@ import { h } from 'vue'
             let data = new FormData();
             data.append('account',this.ruleForm.account);
             data.append('password',this.ruleForm.pass);
-            this.axios.post(`http://127.0.0.1:8081/checkAccount`,data)
+            this.axios.post(this.appUrl+`/checkAccount`,data)
                 .then(response => {
                   if(response.data['state']=="ok") {
                       //画面跳转
@@ -82,7 +108,7 @@ import { h } from 'vue'
                     ElMessage({
                       message: h('p', null, [
                         h('span', null, '错误信息 '),
-                        h('i', { style: 'color: teal' }, '账号密码不正确'),
+                        h('i', { style: 'color: teal' }, response.data['message']),
                       ]),})
                   } 
                 })
