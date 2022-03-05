@@ -80,7 +80,7 @@ var checkName = (rule, value, callback) => {
         callback()
       }
       return {
-        appUrl:'http://www.zimuge.tk/api',
+        appUrl:'http://127.0.0.1/api',
         ruleForm: {
           pass: '',
           checkPass: '',
